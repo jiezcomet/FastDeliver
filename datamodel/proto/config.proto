@@ -1,0 +1,11 @@
+package datamodel;
+
+
+message ClientInfo{
+	required uint32 Type=1;
+	required uint32 CmdReqPort=2 [default=9000];
+	required uint32 DataPullPort=3 [default=10000];
+	required uint32 DataReqPort=4 [default=10100];
+	required string Ip=5;
+	
+}

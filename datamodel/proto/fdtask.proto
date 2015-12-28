@@ -1,0 +1,20 @@
+package datamodel;
+
+message FileDeliverTask{
+	required string TaskName=1;
+	repeated string Target=2;
+	required bytes ImageDescJson=3;
+}
+
+message MessageAck{
+	required bool IsSuccess=1;
+	optional string ErrMsg=2;
+}
+
+message KeepAlive{
+	required uint32 NodeType=1;
+	required string NodeId=2;
+}
+message StartSendFile{
+	required string TaskName=1;
+}
