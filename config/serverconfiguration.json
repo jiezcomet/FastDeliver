@@ -4,5 +4,6 @@
 	"DataReqPort": 10000,
 	"HttpPort": 8080,
 	"LanIp": "127.0.0.1",
-	"WanIp": "127.0.0.1"
+	"WanIp": "127.0.0.1",
+	"StorePath":"E:\\workspace\\FD\\Store"
 }

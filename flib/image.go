@@ -2,8 +2,9 @@ package flib
 
 import (
 	"bytes"
-	"encoding/json"
 	"encoding/base64"
+	"encoding/json"
+	//	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -31,6 +32,8 @@ type Image struct {
 	RealFileHashMap map[string][]byte
 	FileLinkMap     map[string]string //key link target, value link source
 	LastModifyDate  time.Time
+	FileCount int32
+	FilesSize int64
 }
 
 func CreateImageN(name, path string) (*Image, error) {
@@ -42,31 +45,33 @@ func CreateImageN(name, path string) (*Image, error) {
 		image.FileLinkMap = make(map[string]string)
 		image.LastModifyDate = time.Now()
 		if err := image.scan(); err != nil {
-			Log.Error("Image path scan process failed! err:%v",err)
+			Log.Error("Image path scan process failed! err:%v", err)
 			return nil, err
 		} else {
 			return image, image.flush()
 		}
 	} else {
-		Log.Error("Image path cannot be found! err:%v",err)
+		Log.Error("Image path cannot be found! err:%v", err)
 		return nil, err
 	}
 }
 func (i *Image) scan() error {
-	Log.Info("start to scan the path %s",i.RootPath)
+	Log.Info("start to scan the path %s", i.RootPath)
 	var hashCodeMaps = make(map[string]map[string][]byte)
-
 	err := filepath.Walk(i.RootPath, func(p string, info os.FileInfo, e error) error {
 		if !info.IsDir() {
+			i.FileCount++
+			
 			var relPath = strings.TrimPrefix(p, i.RootPath)
 			code, err := GetFileHashCode(p)
 			if err == nil {
-				Log.Debug("file related path:%s , hashcode is %s",relPath,base64.StdEncoding.EncodeToString(code))
+				Log.Debug("file related path:%s , hashcode is %s", relPath, base64.StdEncoding.EncodeToString(code))
 				if inHashCodeMap, isExists := hashCodeMaps[info.Name()]; !isExists {
 					inHashCodeMap = make(map[string][]byte)
 					inHashCodeMap[relPath] = code
 					hashCodeMaps[info.Name()] = inHashCodeMap
 					i.RealFileHashMap[relPath] = code
+					i.FilesSize=i.FilesSize+info.Size()
 				} else {
 					var isMatched = false
 					for linkSource, oCode := range inHashCodeMap {
@@ -77,16 +82,18 @@ func (i *Image) scan() error {
 						}
 					}
 					if !isMatched {
+						i.FilesSize=i.FilesSize+info.Size()
 						i.RealFileHashMap[relPath] = code
 						inHashCodeMap[relPath] = code
 					}
 				}
-			}else{
-				Log.Error("Hashcode cannot be sum for File (full path %s),err:%v ",p,err)
+			} else {
+				Log.Error("Hashcode cannot be sum for File (full path %s),err:%v ", p, err)
 			}
 		}
 		return nil
 	})
+
 	return err
 }
 func (i Image) flush() error {
@@ -97,10 +104,10 @@ func (i Image) flush() error {
 	if err == nil {
 		if file, err := os.OpenFile(cfgFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666); err == nil {
 			defer file.Close()
-//			var cmpWriter,_=flate.NewWriter(file,flate.DefaultCompression)
-//			defer cmpWriter.Close()
-//			cmpWriter.Write(b)
-//			cmpWriter.Flush()
+			//			var cmpWriter,_=flate.NewWriter(file,flate.DefaultCompression)
+			//			defer cmpWriter.Close()
+			//			cmpWriter.Write(b)
+			//			cmpWriter.Flush()
 			file.Write(b)
 			return nil
 		} else {
@@ -110,4 +117,3 @@ func (i Image) flush() error {
 		return err
 	}
 }
-

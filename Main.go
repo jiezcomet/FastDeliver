@@ -10,10 +10,12 @@ import (
 //	"strings"
 	"FastDeliver/log"
 	dm "FastDeliver/datamodel"
+	"runtime"
 )
 var fileCount,repeatedCount int64=0,0
 
 func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
 //	var fileDic=make(map[string] []byte);
 //	var repeDic=make(map[string] []byte);
 //	var rootPath="E:/workspace/FD/RM2.0CI_CDC_20150921.2"
@@ -68,17 +70,13 @@ func main() {
 	log.InitLog();
 	log.Log.Debug( time.Now())
 	
-	var sc=&dm.ServerConfig{}
-	sc.CmdPubPort,sc.CmdReqPort=9000,9100
-	sc.DataReqPort,sc.HttpPort=10000,8080
-	sc.LanIp,sc.WanIp="127.0.0.1","127.0.0.1"
-	sc.SaveServerConfiguration("./config/serverconfiguration.json")
-	
-	var imagePath="E:\\workspace\\FD\\RM2.0CI_CDC_20151226.1";
+	var sc,err=dm.LoadServerConfiguration("./config/serverconfiguration.json")
+	log.Log.Info(sc,err)
+	var imagePath="C:\\RM2.0CI_CDC_20151226.1";
 
 	log.Log.Info( time.Now())
 	var image,_=flib.CreateImageN("T12",imagePath)
-	log.Log.Debug("FileCount :%d\n",len(image.RealFileHashMap))
+	log.Log.Info("RelFileCount :%d, FileCount :%d , Size:%d\n",len(image.RealFileHashMap),image.FileCount,image.FilesSize)
 	log.Log.Info( time.Now())
 	log.Close()
 	

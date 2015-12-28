@@ -8,7 +8,7 @@
   <filter enabled="true">  
     <tag>file</tag>  
     <type>file</type>  
-    <level>INFO</level>  
+    <level>DEBUG</level>  
     <property name="filename">./log/FileServer.log</property>  
     <!--  
        %T - Time (15:04:05 MST)  

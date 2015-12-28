@@ -17,6 +17,7 @@ type ServerConfig struct{
 	HttpPort uint 
 	LanIp string
 	WanIp string
+	StorePath string
 }
 
 func LoadServerConfiguration(confPath string)(*ServerConfig,error){
