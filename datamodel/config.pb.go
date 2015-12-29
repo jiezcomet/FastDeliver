@@ -15,6 +15,7 @@ It has these top-level messages:
 	MessageAck
 	KeepAlive
 	StartSendFile
+	FilePackageHeader
 */
 package datamodel
 

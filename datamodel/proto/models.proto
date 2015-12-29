@@ -18,3 +18,9 @@ message KeepAlive{
 message StartSendFile{
 	required string TaskName=1;
 }
+
+message FilePackageHeader{
+	required string FileName=1;
+	required string RelPath=2;
+	required bytes HashCode=3;
+}

@@ -1,9 +1,9 @@
 package mgrs
 
-import(
+import (
 	dm "FastDeliver/datamodel"
 )
 
-type ConnMgr struct{
-	clients map[string] *dm.ClientInfo
+type ConnMgr struct {
+	clients map[string]*dm.ClientInfo
 }

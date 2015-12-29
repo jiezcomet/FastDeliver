@@ -76,7 +76,7 @@ func main() {
 
 	log.Log.Info( time.Now())
 	var image,_=flib.CreateImageN("T12",imagePath)
-	log.Log.Info("RelFileCount :%d, FileCount :%d , Size:%d\n",len(image.RealFileHashMap),image.FileCount,image.FilesSize)
+	log.Log.Info("RelFileCount :%d, FileCount :%d , Size:%d",len(image.RealFileHashMap),image.FileCount,image.FilesSize)
 	log.Log.Info( time.Now())
 	log.Close()
 	
